@@ -33,7 +33,7 @@ export default function SignupPage() {
 
       setMsg("Oldu! Verification için lütfen sana gelen emaildeki linke tıkla!");
       // For now, also show the verify link (useful until email sending is wired)
-      if (data.verifyUrl) setVerifyUrl(data.verifyUrl);
+      
       setName("");
       setEmail("");
     } catch (e: unknown) {

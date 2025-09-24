@@ -33,7 +33,7 @@ export default function Home() {
       </div>
 
       <p style={{ fontSize: 16, lineHeight: 1.5, marginBottom: 20 }}>
-        Diyelim ki, birkaç gün sonra D, hedefi olan B'yi elimine ediyor:
+        Diyelim ki, birkaç gün sonra D, hedefi olan Byi elimine ediyor:
       </p>
 
       <div style={{ display: "flex", justifyContent: "center", margin: "1rem 0" }}>
@@ -42,8 +42,8 @@ export default function Home() {
       </div>
 
       <p style={{ fontSize: 16, lineHeight: 1.5, marginBottom: 20 }}>
-        Bu durumda, B oyundan çıkıyor (ve oyundan elendiğine dair bir email alıyor) ve D'nin yeni
-        hedefi, eskiden B'nin hedefi olan C oluyor. Zincir hiçbir zaman bozulmuyor, ta ki oyunun sonunda iki kişi kalana kadar
+        Bu durumda, B oyundan çıkıyor (ve oyundan elendiğine dair bir email alıyor) ve Dnin yeni
+        hedefi, eskiden Bnin hedefi olan C oluyor. Zincir hiçbir zaman bozulmuyor, ta ki oyunun sonunda iki kişi kalana kadar
       </p>
 
       <div style={{ display: "flex", justifyContent: "center", margin: "1rem 0" }}>
@@ -84,7 +84,7 @@ export default function Home() {
           textDecoration: "none"
         }}
       >
-        Report who you've assassined
+        Report who you`&apos;`ve assassined
       </Link>
       <Link
         href="/admin/login"

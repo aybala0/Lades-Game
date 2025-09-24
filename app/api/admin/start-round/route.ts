@@ -86,9 +86,9 @@ export async function POST() {
       targetTokens, // hunterId -> token for /api/target
       reportTokens, // hunterId -> token for /api/report
     });
-  } catch (e: any) {
-    console.error(e);
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
-  }
+  } catch (e: unknown) {
+  const msg = e instanceof Error ? e.message : String(e);
+  return NextResponse.json({ ok: false, error: msg }, { status: 400 });
+}
 }
 

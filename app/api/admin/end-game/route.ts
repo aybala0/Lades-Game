@@ -9,11 +9,9 @@ import { prisma } from "@/lib/prisma";
  * - Deactivates all active assignments.
  * - Optionally records a winner id (if you later add Round.winnerId; safe to ignore otherwise).
  */
-export async function POST(req: Request) {
-  try {
-    const body = await req.json().catch(() => ({} as any));
-    const winnerId: string | undefined = body?.winnerId;
 
+export async function POST() {
+  try {
     // find any active round (ok if none)
     const activeRound = await prisma.round.findFirst({ where: { status: "active" } });
 
@@ -38,8 +36,8 @@ export async function POST(req: Request) {
       roundEnded: Boolean(activeRound),
       note: "Assignments deactivated; game ended.",
     });
-  } catch (e: any) {
-    console.error(e);
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return NextResponse.json({ ok: false, error: msg }, { status: 400 });
   }
 }

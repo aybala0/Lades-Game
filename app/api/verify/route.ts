@@ -31,7 +31,8 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    return NextResponse.json({ ok: false, error: "verify failed" }, { status: 400 });
-  }
+  } catch (e: unknown) {
+  const msg = e instanceof Error ? e.message : String(e);
+  return NextResponse.json({ ok: false, error: msg }, { status: 400 });
+}
 }

@@ -34,10 +34,14 @@ export default function TargetPage() {
         body: JSON.stringify({ token: tok }),
       });
       const data: TargetResp = await res.json();
-      if (!res.ok || !data.ok) throw new Error((data as any).error || "Target lookup failed");
-      setTarget((data as any).target);
-    } catch (e: any) {
-      setError(e.message || "Target lookup failed");
+      if (!res.ok || !data.ok) {
+        const msg = "error" in data ? data.error : "Target lookup failed";
+        throw new Error(msg);
+      }
+      setTarget(data.target);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Target lookup failed";
+      setError(msg);
     } finally {
       setLoading(false);
     }

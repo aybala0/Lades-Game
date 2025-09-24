@@ -7,11 +7,8 @@ export async function GET() {
     // Raw SQL: if DB is reachable, this succeeds quickly
     await prisma.$queryRaw`SELECT 1`;
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    // Return the error so we can diagnose quickly
-    return NextResponse.json(
-      { ok: false, error: String(e?.message || e) },
-      { status: 500 }
-    );
-  }
+  } catch (e: unknown) {
+  const msg = e instanceof Error ? e.message : String(e);
+  return NextResponse.json({ ok: false, error: msg }, { status: 400 });
+}
 }

@@ -28,9 +28,11 @@ export default function VerifyPage() {
         if (!res.ok || !data.ok) throw new Error(data.error || "Verify failed");
         setStatus("ok");
         setMsg("Kayıt tamamlandı! Artık oyuna dahilsiniz 🎉");
-      } catch (e: any) {
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : "Verify failed";
         setStatus("error");
-        setMsg(e.message || "Verify failed");
+        setMsg(msg);
+        return;
       }
     }
     run();

@@ -9,9 +9,14 @@ import { prisma } from "@/lib/prisma";
  *  - deleteVerifyTokens = true → remove any leftover verify tokens too
  *  - resetPlayerStatuses ignored when keepPlayers=false
  */
+type ClearGameBody = {
+  keepPlayers?: boolean;
+  deleteVerifyTokens?: boolean;
+  resetPlayerStatuses?: boolean;
+};
 export async function POST(req: Request) {
   try {
-    const body = await req.json().catch(() => ({} as any));
+    const body: ClearGameBody = await req.json().catch((): ClearGameBody => ({}));
 
     // ⬇️ NEW DEFAULTS: players are removed unless explicitly kept
     const keepPlayers = body?.keepPlayers === true ? true : false;
@@ -62,8 +67,8 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ ok: true, ...result });
-  } catch (e: any) {
-    console.error(e);
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
-  }
+  } catch (e: unknown) {
+  const msg = e instanceof Error ? e.message : String(e);
+  return NextResponse.json({ ok: false, error: msg }, { status: 400 });
+}
 }

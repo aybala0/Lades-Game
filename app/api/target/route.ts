@@ -36,8 +36,8 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ ok: true, target });
-  } catch (e) {
-    console.error(e);
-    return NextResponse.json({ ok: false, error: "failed to fetch target" }, { status: 500 });
-  }
+  } catch (e: unknown) {
+  const msg = e instanceof Error ? e.message : String(e);
+  return NextResponse.json({ ok: false, error: msg }, { status: 400 });
+}
 }

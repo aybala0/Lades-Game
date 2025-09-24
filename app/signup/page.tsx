@@ -36,8 +36,9 @@ export default function SignupPage() {
       if (data.verifyUrl) setVerifyUrl(data.verifyUrl);
       setName("");
       setEmail("");
-    } catch (e: any) {
-      setErr(e.message || "Signup failed");
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Signup failed";
+      setErr(msg);
     } finally {
       setSubmitting(false);
     }

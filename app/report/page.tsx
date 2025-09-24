@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
@@ -40,10 +40,14 @@ export default function ReportPage() {
         body: JSON.stringify({ token: tok }),
       });
       const data: ReportResp = await res.json();
-      if (!res.ok || !data.ok) throw new Error((data as any).error || "Report failed");
+      if (!res.ok || !data.ok) {
+        const msg = "error" in data ? data.error : "Report failed";
+        throw new Error(msg);
+      }
       setResult(data as ReportOk);
-    } catch (e: any) {
-      setError(e.message || "Report failed");
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Report failed";
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -72,13 +76,7 @@ export default function ReportPage() {
       >
         {loading ? "Submitting…" : "Confirm Elimination"}
       </button>
-      <a
-        href="/"
-        className="rounded border px-4 py-2 hover:bg-gray-100"
-        aria-label="Go back without reporting"
-      >
-        Go back
-      </a>
+      <Link href="/" className="rounded border px-4 py-2 hover:bg-gray-100">Go back</Link>
     </div>
     <p className="text-xs text-gray-500">
       Tip: Don’t share this link. Anyone with it can submit on your behalf.

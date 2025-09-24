@@ -221,8 +221,8 @@ if (!result.roundEnded) {
 }
 
     return NextResponse.json({ ok: true, ...result, newReportToken, newTargetToken });
-  } catch (e:any) {
-    console.error(e);
-    return NextResponse.json({ ok: false, error: String(e?.message || e)  }, { status: 400 });
-  }
+  } catch (e: unknown) {
+  const msg = e instanceof Error ? e.message : String(e);
+  return NextResponse.json({ ok: false, error: msg }, { status: 400 });
+}
 }

@@ -13,7 +13,10 @@ export default function Home() {
         çok pozitif bir geridönüş almıştım, hem de gerçekten insanların birbirleriyle tanışmasına katkı
         sağlamıştı. Ben de TSA olarak kendi aramızda oynarsak herkesin birbiriyle konuşmak ve
         interact etmek için bir sebebi daha olur, yeni gelen arkadaşlarımızın da herkesle daha samimi
-        bir şekilde tanışabilmesinin bir yolunu açmış olabiliriz diye düşündüm.
+        bir şekilde tanışabilmesinin bir yolunu açmış olabiliriz diye düşündüm. Ayrıca, oyunu yönetmem
+        gerektiği için (mailleri manuel atmaktan cycleı ayarlamaya kadar her şeyi elle yapıyordum) lisedeyken
+        bu oyunları asla oynayamadım, o yüzden şimdi kimsenin yönetmesine gerek kalmadan otomatize ettim. 
+        Ben de oynayabileceğim yani!
         <br />
         <br /> <b><span style={{ color: "#3F4739", fontSize: 25}}>Assassin Nedir?</span> </b>
         <br />
@@ -55,7 +58,18 @@ export default function Home() {
         Kim rakibini ilk önce elerse o kazanıyor.
       </p>
       
-      
+      <p style={{ fontSize: 16, lineHeight: 1.5, marginBottom: 20 }}>
+        <b><span style={{ color: "#3F4739" , fontSize: 25}}>Neden Lades?</span> </b>
+        <br />
+        Bizim assassinate etme metodumuz, yani hedeflerimizi eleme şeklimiz, onları ladeslemek olacak.
+        Hala Ladesin Türkiyede herkes tarafından bu kadar yaygın bir şekilde bilinmesine şaşırıyorum, hayatımda
+        Türkiyede şu ana kadar ladesin ne olduğunu bilmeyen biriyle karşılaşmadım. Gerçekten çok kültürel, 
+        araştırdığım kadarıyla da başka hiçbir ülkede yok, biraz sanırım kuzey Iranda var. 
+        <br />
+        Ladesin güzel bir eleme metodu olduğunu düşünmemin bir diğer sebebi ise, interaksiyonun zamanını ve 
+        komikliğini artırması. Aklıma gelen bazı ladesleme metodları: &quotkahvemi bir saniye tutabilir misin&quot veya &quotya şurda bir 
+        fotoğrafımı çekebilir misin&quot gibi şeyler... ama sizin aklınıza çok daha yaratıcı metodlar gelir eminim.
+      </p>
 
 
 

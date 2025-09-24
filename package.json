@@ -7,11 +7,12 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate"
-},
+    "postinstall": "prisma generate",
+    "prisma:gen": "dotenv -e prisma/.env -- prisma generate --schema=prisma/schema.prisma",
+    "prisma:deploy": "dotenv -e prisma/.env -- prisma migrate deploy"
+  },
   "dependencies": {
     "@prisma/client": "^6.15.0",
-    "bcrypt": "^6.0.0",
     "next": "15.5.2",
     "next-auth": "^4.24.11",
     "nodemailer": "^6.10.1",
@@ -21,11 +22,11 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
-    "@types/bcrypt": "^6.0.0",
     "@types/node": "^20",
     "@types/nodemailer": "^7.0.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv-cli": "^10.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
     "prisma": "^6.15.0",

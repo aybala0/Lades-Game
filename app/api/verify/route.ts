@@ -23,7 +23,6 @@ export async function POST(req: Request) {
         consumed: true,
         expiresAt: true,
         playerId: true,
-        player: { select: { id: true, status: true } },
       },
     });
 
@@ -37,9 +36,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "link expired" }, { status: 400 });
     }
 
+    const player = row.playerId
+      ? await prisma.player.findUnique({
+          where: { id: row.playerId },
+          select: { status: true },
+        })
+      : null;
+
     // If already consumed, consider success if player is active (idempotent verify)
     if (row.consumed) {
-      if (row.player?.status === "active") {
+      if (player?.status === "active") {
         return NextResponse.json({ ok: true, alreadyVerified: true });
       }
       return NextResponse.json({ ok: false, error: "token already used" }, { status: 400 });

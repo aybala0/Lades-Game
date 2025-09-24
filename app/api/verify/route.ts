@@ -14,16 +14,41 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "missing token" }, { status: 400 });
     }
 
-    // Ensure the token exists, is for 'verify', unexpired, and unused
-    const t = await validateToken(token, "verify");
-    if (!t || !t.playerId) {
-      return NextResponse.json({ ok: false, error: "invalid or expired link" }, { status: 400 });
+    // Fetch token + player so we can handle idempotency (double-clicks)
+    const row = await prisma.emailToken.findUnique({
+      where: { token },
+      select: {
+        id: true,
+        purpose: true,
+        consumed: true,
+        expiresAt: true,
+        playerId: true,
+        player: { select: { id: true, status: true } },
+      },
+    });
+
+    if (!row) {
+      return NextResponse.json({ ok: false, error: "invalid link" }, { status: 400 });
+    }
+    if (row.purpose !== "verify") {
+      return NextResponse.json({ ok: false, error: "wrong token purpose" }, { status: 400 });
+    }
+    if (row.expiresAt < new Date()) {
+      return NextResponse.json({ ok: false, error: "link expired" }, { status: 400 });
     }
 
-    // Activate the player and consume the token atomically
+    // If already consumed, consider success if player is active (idempotent verify)
+    if (row.consumed) {
+      if (row.player?.status === "active") {
+        return NextResponse.json({ ok: true, alreadyVerified: true });
+      }
+      return NextResponse.json({ ok: false, error: "token already used" }, { status: 400 });
+    }
+
+    // Normal flow: activate + consume atomically
     await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       await tx.player.update({
-        where: { id: t.playerId! },
+        where: { id: row.playerId! },
         data: { status: "active" },
       });
 

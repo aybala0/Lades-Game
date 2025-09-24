@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     }
 
     // Activate the player and consume the token atomically
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: typeof prisma) => {
       await tx.player.update({
         where: { id: t.playerId! },
         data: { status: "active" },

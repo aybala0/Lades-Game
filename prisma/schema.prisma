@@ -1,0 +1,52 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Player {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   
+  status    String   @default("pending") // pending|active|eliminated
+  createdAt DateTime @default(now())
+}
+
+model EmailToken {
+  id        String   @id @default(cuid())
+  playerId  String?
+  purpose   String
+  token     String   @unique
+  expiresAt DateTime
+  consumed  Boolean  @default(false)
+}
+
+model Round {
+  id       String   @id @default(cuid())
+  status   String
+  startsAt DateTime
+  endsAt   DateTime // ok to keep or remove if you don’t use it
+}
+
+model Assignment {
+  id       String  @id @default(cuid())
+  roundId  String
+  hunterId String
+  targetId String
+  active   Boolean @default(true)
+
+  @@unique([roundId, hunterId, active])
+  @@unique([roundId, targetId, active])
+}
+
+model Report {
+  id        String   @id @default(cuid())
+  roundId   String
+  hunterId  String
+  targetId  String
+  status    String   @default("pending") // pending|approved
+  createdAt DateTime @default(now())
+}

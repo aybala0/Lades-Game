@@ -31,7 +31,7 @@ export default function SignupPage() {
         throw new Error(data.error || "Signup failed");
       }
 
-      setMsg("Oldu! Verification icin lutfen emailine bak!");
+      setMsg("Oldu! Verification için lütfen sana gelen emaildeki linke tıkla!");
       // For now, also show the verify link (useful until email sending is wired)
       if (data.verifyUrl) setVerifyUrl(data.verifyUrl);
       setName("");
@@ -49,24 +49,35 @@ export default function SignupPage() {
       <h1 className="text-2xl font-semibold">Oyuna Katıl</h1>
       <form onSubmit={onSubmit} className="space-y-3">
         <div>
-          <label className="block text-sm mb-1">Adınız <br /> Lütfen tam adınızı girin, diğer oyuncular sizi böyle görecekler!</label>
+          <label className="title">
+            Adınız 
+            <span className="block text-xs text-[#717568]">
+              Lütfen tam adınızı girin, diğer oyuncular sizi böyle görecekler!
+            </span>
+          </label>
+          
           <input
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full rounded border px-3 py-2"
-            placeholder="Your name"
+            placeholder="Ad Soyad"
           />
         </div>
         <div>
-          <label className="block text-sm mb-1">Email <br /> Oyun içi iletişimimiz böyle olacak</label>
+          <label className="title">
+            Email 
+            <span className="block text-xs text-[#717568]">
+              Oyun içi iletişmimiz emailler üzerinden olacak.
+            </span>
+          </label>
           <input
             type="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full rounded border px-3 py-2"
-            placeholder="you@example.com"
+            placeholder="lala@lalamail.com"
           />
         </div>
 
@@ -84,7 +95,7 @@ export default function SignupPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="rounded bg-black text-white px-4 py-2 disabled:opacity-60"
+          className="btn"
         >
           {submitting ? "Submitting…" : "Sign up"}
         </button>

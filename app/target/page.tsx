@@ -54,25 +54,25 @@ function TargetContent() {
 
   return (
     <main className="mx-auto max-w-md p-6 space-y-4">
-      <h1 className="text-2xl font-semibold">Your Target</h1>
+      <h1 className="text-2xl font-semibold">Hedefiniz</h1>
 
       {!tokenFromUrl && (
         <form onSubmit={onSubmit} className="space-y-3">
           <div>
-            <label className="block text-sm mb-1">Target Token</label>
+            <label className="block text-sm mb-1">Hedef Tokenı</label>
             <input
               value={token}
               onChange={(e) => setToken(e.target.value)}
-              placeholder="Paste your target token"
+              placeholder="Hedef tokenını yapıştırın"
               className="w-full rounded border px-3 py-2"
             />
           </div>
           <button
             type="submit"
             disabled={loading || !token}
-            className="rounded bg-black text-white px-4 py-2 disabled:opacity-60"
+            className="btn"
           >
-            {loading ? "Fetching…" : "Show Target"}
+            {loading ? "Fetching…" : "Hedefi Göster"}
           </button>
         </form>
       )}
@@ -90,7 +90,7 @@ function TargetContent() {
 
       <p className="mt-6">
         <Link href="/" className="underline text-blue-600 hover:text-blue-800">
-          ← Return to Home
+          ← Ana Menü
         </Link>
       </p>
     </main>

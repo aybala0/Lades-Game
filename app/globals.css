@@ -1,27 +1,54 @@
 @import "tailwindcss";
 
+/* Force LIGHT mode everywhere (mobile browsers won't auto-darken) */
+html {
+  color-scheme: light !important; /* override Tailwind/UA defaults */
+}
+
 :root {
   --background: #E1F4CB;
   --foreground: #3F4739;
-  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* Remove automatic dark-mode overrides. If you want a manual dark theme later,
+   use a data attribute (e.g., :root[data-theme="dark"]) instead of prefers-color-scheme. */
+/* @media (prefers-color-scheme: dark) { ... }  ← intentionally removed */
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.btn {
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-right: 12px;
+  background: #F1BF98;
+  color: white;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  font-size: clamp(14px, 2.5vw, 18px); 
+}
+
+.btn:hover {
+  background: #e1a97c;
+}
+
+.title {
+  color: #3F4739;
+  font-size: clamp(15px, 2.5vw, 20px);
+  font-weight: bold;
+}
+
+/* Tame iOS autofill yellow + dark mode inversion */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: #111111 !important;
+  -webkit-box-shadow: 0 0 0px 1000px #ffffff inset;
+  box-shadow: 0 0 0px 1000px #ffffff inset;
 }

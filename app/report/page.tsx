@@ -61,13 +61,13 @@ function ReportContent() {
 
   return (
     <main className="mx-auto max-w-md p-6 space-y-4">
-      <h1 className="text-2xl font-semibold">Report Elimination</h1>
+      <h1 className="text-2xl font-semibold"> Eliminasyon Bildir</h1>
 
       {tokenFromUrl && (
   <div className="space-y-3 rounded border p-4 bg-gray-50">
     <p>
-      You opened a <strong>report link</strong>. If you click confirm, this will
-      record an elimination for your current target.
+      Bir eliminasyon linki açtınız. Eğer confirme tıklarsanız, şu anki hedefiniz oyundan elenecektir. 
+      Onaylıyor musunuz?
     </p>
     <div className="flex gap-2">
       <button
@@ -75,12 +75,12 @@ function ReportContent() {
         disabled={loading}
         className="rounded bg-black text-white px-4 py-2 disabled:opacity-60"
       >
-        {loading ? "Submitting…" : "Confirm Elimination"}
+        {loading ? "Submitting…" : "Onayla"}
       </button>
       <Link href="/" className="rounded border px-4 py-2 hover:bg-gray-100">Go back</Link>
     </div>
     <p className="text-xs text-gray-500">
-      Tip: Don’t share this link. Anyone with it can submit on your behalf.
+      Tip: Bu linki kimseyle paylaşmayın. Bu linke sahip olan biri sizin adınıza oyuncuları eleyebilir.
     </p>
   </div>
 )}
@@ -89,20 +89,20 @@ function ReportContent() {
       {!tokenFromUrl && (
         <form onSubmit={onSubmit} className="space-y-3">
           <div>
-            <label className="block text-sm mb-1">Report Token</label>
+            <label className="block text-sm mb-1">Eliminasyon Tokenı</label>
             <input
               value={token}
               onChange={(e) => setToken(e.target.value)}
-              placeholder="Paste your report token"
+              placeholder="Eliminasyon token'ınızı yapıştırın"
               className="w-full rounded border px-3 py-2"
             />
           </div>
           <button
             type="submit"
             disabled={loading || !token}
-            className="rounded bg-black text-white px-4 py-2 disabled:opacity-60"
+            className="btn"
           >
-            {loading ? "Submitting…" : "Report"}
+            {loading ? "Submitting…" : "Onayla"}
           </button>
         </form>
       )}
@@ -112,19 +112,19 @@ function ReportContent() {
 
       {result && (
         <div className="rounded border p-4 bg-gray-50 space-y-2">
-          <p className="text-green-700">Report recorded! ✅</p>
+          <p className="text-green-700">Rapor alındı! ✅</p>
           {result.roundEnded ? (
-            <p>The game has ended. 🎉</p>
+            <p>Oyun bitti! 🎉</p>
           ) : (
             <>
-              <p>Your new report token (for your next elimination):</p>
+              <p>Yeni rapor tokenınız (bir sonraki eliminasyonunuz için):</p>
               {result.newReportToken ? (
                 <code className="block break-all bg-white border p-2 rounded">
                   {result.newReportToken}
                 </code>
               ) : (
                 <p className="text-sm text-gray-600">
-                  (A new token will be emailed to you.)
+                  (Size yeni bir token emaillenecek)
                 </p>
               )}
             </>
@@ -134,7 +134,7 @@ function ReportContent() {
 
       <p className="mt-6">
         <Link href="/" className="underline text-blue-600 hover:text-blue-800">
-          ← Return to Home
+          ← Ana Menü
         </Link>
       </p>
     </main>

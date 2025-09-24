@@ -3,51 +3,18 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <main style={{ maxWidth: 600, margin: "2rem auto", padding: "1rem" }}>
-      <h1 style={{ fontSize: "clamp(24px, 5vw, 35px)", fontWeight: 700, marginBottom: 12, color: '#3F4739'}}>
+    <main style={{ width: "100%", maxWidth: 600, margin: "2rem auto", padding: "1rem" }}>
+      <h1 style={{ fontSize: "clamp(35px, 5vw, 35px)", fontWeight: 700, marginBottom: 12, color: '#3F4739'}}>
         Lades Oyununa Hoşgeldiniz!
       </h1>
 
-      <Link
-        href="/signup"
-        style={{
-          padding: "10px 14px",
-          borderRadius: 6,
-          background: "#F1BF98",
-          color: "white",
-          textDecoration: "none",
-          marginRight: "20px"
-        }}
-      >
-        Oyuna Katıl
-      </Link>
-      <Link
-        href="/report"
-        style={{
-          padding: "10px 14px",
-          borderRadius: 6,
-          background: "#F1BF98",
-          color: "white",
-          textDecoration: "none",
-          marginRight: "20px"
-        }}
-      >
-        Hedef Eleme
-      </Link>
-      
-      <Link
-        href="/target"
-        style={{
-          padding: "10px 14px",
-          borderRadius: 6,
-          background: "#F1BF98",
-          color: "white",
-          textDecoration: "none",
-          marginRight: "10px"
-        }}
-      >
-        Target
-      </Link>
+      {/* BUTTONS */}
+      <div className="btnRow">
+        <Link href="/signup" className="btn">Oyuna Katıl</Link>
+        <Link href="/report" className="btn">Hedef Eleme</Link>
+        <Link href="/target" className="btn">Hedefini Gör</Link>
+      </div>
+
       <br/>
       <p style={{ fontSize: 16, lineHeight: 1.5, marginTop: 20, marginBottom: 20 }}>
         Benimle aynı zamanda lisede olmuş olan insanlar belki hatırlarlar, bu oyunun çok daha teknolojik
@@ -81,9 +48,22 @@ export default function Home() {
         Diyelim ki, birkaç gün sonra D, hedefi olan Byi elimine ediyor:
       </p>
 
-      <div style={{ display: "flex", justifyContent: "center", margin: "1rem 0" }}>
-        <Image src="/images/cycle2.png" alt="cycle1" width={300} height={300} />
-        <Image src="/images/cycle3.png" alt="cycle1" width={300} height={300} />
+      <div style={{display: "flex", justifyContent: "center", gap: "1rem",}}
+      >
+        <Image
+          src="/images/cycle2.png"
+          alt="cycle2"
+          width={300}
+          height={300}
+          style={{ width: "45%", height: "auto", maxWidth: "300px" }}
+        />
+        <Image
+          src="/images/cycle3.png"
+          alt="cycle3"
+          width={300}
+          height={300}
+          style={{ width: "45%", height: "auto", maxWidth: "300px" }}
+        />
       </div>
 
       <p style={{ fontSize: 16, lineHeight: 1.5, marginBottom: 20 }}>
@@ -112,6 +92,28 @@ export default function Home() {
         komikliğini artırması. Aklıma gelen bazı ladesleme metodları: &quotkahvemi bir saniye tutabilir misin&quot veya &quotya şurda bir 
         fotoğrafımı çekebilir misin&quot gibi şeyler... ama sizin aklınıza çok daha yaratıcı metodlar gelir eminim.
       </p>
+
+
+      <p style={{ fontSize: 16, lineHeight: 1.5, marginBottom: 20 }}>
+        <b><span style={{ color: "#3F4739" , fontSize: 25}}>Hedef Eleme ve Oyun İşleyişi</span> </b>
+        <br/>
+        Oyuna katılmak isteyen herkes katıldıktan sonra oyun başlayacak. Tüm oyuncular oyunun başladığına dair bir email alacaklar
+        Bu Emailin içinde iki tane link bulunacak:
+        <br/>
+        1. Hedefinizin kim olduğunu görme linki
+        <br/>
+        2. Hedefinizi eleme linki
+        <br/>
+        Hedefinizi görmek veya hedefinizi elemek için bu linklere basabilirsiniz. Veya, linkin sonuna doğru bulunan
+        token=*uzun alfanumerik bir kod* kısmına gidip, bu kodu kopyalayıp, şu anda ana bulunduğunuz ana menüde yukarıda 
+        gördüğünüz hedef eleme/hedefini gör menülerine girip bu 'token'ınızı yapıştırabilirsiniz.
+
+
+     
+      </p>
+
+
+
       <Link
         href="/admin/login"
         style={{
@@ -125,12 +127,6 @@ export default function Home() {
       >
         Admin Login
       </Link>
-
-
-
-
-
-
     </main>
   );
 }

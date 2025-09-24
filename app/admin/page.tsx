@@ -39,6 +39,15 @@ export default async function AdminHome() {
         </button>
       </form>
 
+      <form action="/api/admin/send-update" method="post" className="mt-6">
+        <button
+          type="submit"
+          className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+        >
+          Send Update Email to All Players
+        </button>
+      </form>
+
       <p className="mt-6">
         <Link href="/" className="underline text-blue-600 hover:text-blue-800">
           ← Return to Home

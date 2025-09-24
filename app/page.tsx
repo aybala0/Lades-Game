@@ -17,7 +17,7 @@ export default function Home() {
 
       <br/>
       <p style={{ fontSize: 16, lineHeight: 1.5, marginTop: 20, marginBottom: 20 }}>
-        <span style={{ color: "#3F4739", fontSize: 25}}>Merhaba!</span>
+        <span style={{ color: "#3F4739", fontSize: 25}}>Merhaba 👋</span>
         Benimle aynı zamanda lisede olmuş olan insanlar belki hatırlarlar, bu oyunun çok daha teknolojik
         olarak zayıf halini yapmıştım ve 500 kişilik bir katılımla bütün okulda oynamıştık. Hem 
         çok pozitif bir geridönüş almıştım, hem de gerçekten insanların birbirleriyle tanışmasına katkı

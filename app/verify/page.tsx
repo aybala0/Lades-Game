@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function VerifyPage() {
+function VerifyContent() {
   const params = useSearchParams();
   const token = params.get("token");
 
@@ -45,5 +45,13 @@ export default function VerifyPage() {
       {status === "ok" && <p className="text-green-700">{msg}</p>}
       {status === "error" && <p className="text-red-600">{msg}</p>}
     </main>
+  );
+}
+
+export default function VerifyPage() {
+  return (
+    <Suspense fallback={<main className="mx-auto max-w-md p-6"><p>Loading…</p></main>}>
+      <VerifyContent />
+    </Suspense>
   );
 }

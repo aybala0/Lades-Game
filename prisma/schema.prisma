@@ -10,7 +10,7 @@ generator client {
 model Player {
   id        String   @id @default(cuid())
   name      String
-  email     String   
+  email     String   @unique
   status    String   @default("pending") // pending|active|eliminated
   createdAt DateTime @default(now())
 }

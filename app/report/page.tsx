@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import {useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -15,7 +16,7 @@ type ReportOk = {
 
 type ReportResp = ReportOk | { ok: false; error: string };
 
-export default function ReportPage() {
+function ReportContent() {
   const params = useSearchParams();
   const tokenFromUrl = params.get("token") || "";
 
@@ -137,5 +138,13 @@ export default function ReportPage() {
         </Link>
       </p>
     </main>
+  );
+}
+
+export default function ReportPage() {
+  return (
+    <Suspense fallback={<main className="mx-auto max-w-md p-6"><p>Loading…</p></main>}>
+      <ReportContent />
+    </Suspense>
   );
 }

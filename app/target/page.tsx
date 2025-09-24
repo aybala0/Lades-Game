@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
@@ -8,7 +8,7 @@ type TargetResp =
   | { ok: true; target: { id: string; name: string; email: string } }
   | { ok: false; error: string };
 
-export default function TargetPage() {
+function TargetContent() {
   const params = useSearchParams();
   const tokenFromUrl = params.get("token") || "";
 
@@ -94,5 +94,13 @@ export default function TargetPage() {
         </Link>
       </p>
     </main>
+  );
+}
+
+export default function TargetPage() {
+  return (
+    <Suspense fallback={<main className="mx-auto max-w-md p-6"><p>Loading…</p></main>}>
+      <TargetContent />
+    </Suspense>
   );
 }

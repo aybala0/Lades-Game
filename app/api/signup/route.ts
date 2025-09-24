@@ -23,9 +23,10 @@ export async function POST(req: Request) {
     const trimmedName = name.trim();
     const normalizedEmail = email.trim().toLowerCase();
 
-    // 🚨 Dev-only: always create a new player, ignore duplicates
-    const player = await prisma.player.create({
-      data: { name: trimmedName, email: normalizedEmail, status: "pending" },
+    const player = await prisma.player.upsert({
+      where: { email: normalizedEmail },
+      update: {}, 
+      create: { name: trimmedName, email: normalizedEmail, status: "pending" },
       select: { id: true, name: true, email: true, status: true },
     });
 
@@ -37,23 +38,25 @@ export async function POST(req: Request) {
 
     const verifyUrl = `${APP_BASE_URL}/verify?token=${token}`;
 
-    console.log("[verify link]", verifyUrl);
-
     try {
       await sendMail({
         to: player.email,
         subject: "Verify your signup",
         html: `
-          <p>Hi ${player.name},</p>
-          <p>Please click the link below to verify and join the game:</p>
+          <p>Merhaba ${player.name},</p>
+          <p>Oyuna katılmak için lütfen aşağıdaki linke tıklayarak verificationunu tamamla.:</p>
           <p><a href="${verifyUrl}">${verifyUrl}</a></p>
-          <p>If you didn’t request this, you can ignore this email.</p>
         `,
-        text: `Hi ${player.name}\nVerify link: ${verifyUrl}\nIf you didn’t request this, you can ignore this email.`,
+        text: `Hi ${player.name}\nVerify link: ${verifyUrl}`,
       });
     } catch (err) {
       console.error("sendMail failed:", err);
+      // still return the URL so you can test in dev
     }
+
+// For now, return the link (and log it) so you can click it during dev.
+console.log("[verify link]", verifyUrl);
+
 
     return NextResponse.json({ ok: true, verifyUrl });
   } catch (e: unknown) {

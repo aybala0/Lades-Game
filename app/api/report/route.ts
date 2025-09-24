@@ -1,8 +1,11 @@
 // app/api/report/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
 import { validateToken, createEmailToken } from "@/lib/tokens";
 import { sendMail } from "@/lib/email";
+
+type PlayerLite = { id: string; name: string; email: string; status: string };
 
 export async function POST(req: Request) {
   try {
@@ -37,7 +40,7 @@ export async function POST(req: Request) {
     }
 
     // 4) run everything atomically
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // a) create report (auto-approve)
       const report = await tx.report.create({
         data: {
@@ -114,16 +117,18 @@ export async function POST(req: Request) {
 //elimination email
   if (targetPlayer?.email) {
     const eliminatorName = hunterPlayer?.name ?? "another player";
-    const subject = "You’ve been eliminated";
+    const subject = "Lades - Elendiniz";
     const html = `
-      <p>Hi ${targetPlayer.name},</p>
-      <p>You have been <strong>eliminated</strong> by <strong>${eliminatorName}</strong>.</p>
-      <p>Thanks for playing!</p>
+      <p>Merhaba ${targetPlayer.name},</p>
+      <p>Oyundan <strong>${eliminatorName}</strong> tarafından <strong>elendiniz</strong>.</p>
+      <p>Oynadığınız için teşekkürler!</p>
     `;
     const text =
-      `Hi ${targetPlayer.name}\n` +
-      `You have been eliminated by ${eliminatorName}.\n` +
-      `Thanks for playing!`;
+      `
+      <p>Merhaba ${targetPlayer.name},</p>
+      <p>Oyundan <strong>${eliminatorName}</strong> tarafından <strong>elendiniz</strong>.</p>
+      <p>Oynadığınız için teşekkürler!</p>
+    `;
 
     await sendMail({
       to: targetPlayer.email,
@@ -140,25 +145,25 @@ export async function POST(req: Request) {
 // game end emails
 if (result.roundEnded) {
   try {
-    const players = await prisma.player.findMany({
+    const players: PlayerLite[] = await prisma.player.findMany({
       select: { id: true, name: true, email: true, status: true },
     });
 
-    const winner = players.find((p) => p.status !== "eliminated");
+    const winner = players.find((p: PlayerLite) => p.status !== "eliminated");
 
     for (const p of players) {
       if (!p.email) continue;
       try {
         await sendMail({
           to: p.email,
-          subject: "The game has ended",
+          subject: "Lades - Oyunun Sonu",
           html: `
-            <p>Hi ${p.name},</p>
-            <p>The Assassin game is now over.</p>
+            <p>Merhaba ${p.name},</p>
+            <p>Lades oyunu sona erdi.</p>
             ${
               p.id === winner?.id
-                ? `<p><strong>Congratulations, you are the last survivor!</strong></p>`
-                : `<p>You were eliminated, but thanks for playing!</p>`
+                ? `<p><strong>Tebrikler, you are the last survivor!</strong></p>`
+                : `<p>Oynadığınız için teşekkürler.</p>`
             }
           `,
           text:
@@ -197,19 +202,20 @@ if (!result.roundEnded) {
   // send both links via email
   const hunter = await prisma.player.findUnique({ where: { id: hunterId } });
   if (hunter) {
-    const baseUrl = process.env.APP_BASE_URL || "http://localhost:3000";
+    const baseUrl = process.env.APP_BASE_URL;
     const reportUrl = `${baseUrl}/report?token=${newReportToken}`;
     const targetUrl = `${baseUrl}/target?token=${newTargetToken}`;
     try {
       await sendMail({
         to: hunter.email,
-        subject: "Your updated game links",
+        subject: "Lades - Yeni Linkler",
         html: `
-          <p>Hi ${hunter.name},</p>
-          <p>Your elimination has been processed. Here are your updated links:</p>
+          <p>Merhaba ${hunter.name},</p>
+          <p>Eleme talebiniz gerçekleştirildi. Sonraki hedefinizi görmek, ve elemek için aşağıdaki linkleri 
+          (veya tokenları) kullanabilirsiniz:</p>
           <ul>
-            <li>Report link: <a href="${reportUrl}">${reportUrl}</a></li>
-            <li>Target link: <a href="${targetUrl}">${targetUrl}</a></li>
+            <li>Yeni hedefini gör: <a href="${targetUrl}">${targetUrl}</a></li>
+            <li>Eliminasyon rapor etme: <a href="${reportUrl}">${reportUrl}</a></li>
           </ul>
         `,
         text: `Hi ${hunter.name}\nReport link: ${reportUrl}\nTarget link: ${targetUrl}`,

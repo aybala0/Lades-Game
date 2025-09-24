@@ -106,7 +106,7 @@ export default function Home() {
         <br/>
         Hedefinizi görmek veya hedefinizi elemek için bu linklere basabilirsiniz. Veya, linkin sonuna doğru bulunan
         token=*uzun alfanumerik bir kod* kısmına gidip, bu kodu kopyalayıp, şu anda ana bulunduğunuz ana menüde yukarıda 
-        gördüğünüz hedef eleme/hedefini gör menülerine girip bu 'token'ınızı yapıştırabilirsiniz.
+        gördüğünüz hedef eleme/hedefini gör menülerine girip bu &quot;token&quot;ınızı yapıştırabilirsiniz.
 
 
      

@@ -98,7 +98,7 @@ export default function Home() {
           textDecoration: "none"
         }}
       >
-        Report who you`&apos;`ve assassined
+        Hedef Eleme
       </Link>
       <Link
         href="/admin/login"

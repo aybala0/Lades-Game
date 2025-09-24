@@ -4,10 +4,52 @@ import Image from "next/image";
 export default function Home() {
   return (
     <main style={{ maxWidth: 600, margin: "2rem auto", padding: "1rem" }}>
-      <h1 style={{ fontSize: 35, fontWeight: 700, marginBottom: 12, color: '#3F4739'}}>
+      <h1 style={{ fontSize: "clamp(24px, 5vw, 35px)", fontWeight: 700, marginBottom: 12, color: '#3F4739'}}>
         Lades Oyununa Hoşgeldiniz!
       </h1>
-      <p style={{ fontSize: 16, lineHeight: 1.5, marginBottom: 20 }}>
+
+      <Link
+        href="/signup"
+        style={{
+          padding: "10px 14px",
+          borderRadius: 6,
+          background: "#F1BF98",
+          color: "white",
+          textDecoration: "none",
+          marginRight: "20px"
+        }}
+      >
+        Oyuna Katıl
+      </Link>
+      <Link
+        href="/report"
+        style={{
+          padding: "10px 14px",
+          borderRadius: 6,
+          background: "#F1BF98",
+          color: "white",
+          textDecoration: "none",
+          marginRight: "20px"
+        }}
+      >
+        Hedef Eleme
+      </Link>
+      
+      <Link
+        href="/target"
+        style={{
+          padding: "10px 14px",
+          borderRadius: 6,
+          background: "#F1BF98",
+          color: "white",
+          textDecoration: "none",
+          marginRight: "10px"
+        }}
+      >
+        Target
+      </Link>
+      <br/>
+      <p style={{ fontSize: 16, lineHeight: 1.5, marginTop: 20, marginBottom: 20 }}>
         Benimle aynı zamanda lisede olmuş olan insanlar belki hatırlarlar, bu oyunun çok daha teknolojik
         olarak zayıf halini yapmıştım ve 500 kişilik bir katılımla bütün okulda oynamıştık. Hem 
         çok pozitif bir geridönüş almıştım, hem de gerçekten insanların birbirleriyle tanışmasına katkı
@@ -70,60 +112,25 @@ export default function Home() {
         komikliğini artırması. Aklıma gelen bazı ladesleme metodları: &quotkahvemi bir saniye tutabilir misin&quot veya &quotya şurda bir 
         fotoğrafımı çekebilir misin&quot gibi şeyler... ama sizin aklınıza çok daha yaratıcı metodlar gelir eminim.
       </p>
-
-
-
-
-
-
-      <Link
-        href="/signup"
-        style={{
-          padding: "10px 14px",
-          borderRadius: 6,
-          background: "black",
-          color: "white",
-          textDecoration: "none"
-        }}
-      >
-        Sign up now
-      </Link>
-      <Link
-        href="/report"
-        style={{
-          padding: "10px 14px",
-          borderRadius: 6,
-          background: "#F1BF98",
-          color: "black",
-          textDecoration: "none"
-        }}
-      >
-        Hedef Eleme
-      </Link>
       <Link
         href="/admin/login"
         style={{
           padding: "10px 14px",
           borderRadius: 6,
-          background: "black",
+          background: "#F1BF98",
           color: "white",
-          textDecoration: "none"
+          textDecoration: "none",
+          marginRight: "20px"
         }}
       >
         Admin Login
       </Link>
-      <Link
-        href="/target"
-        style={{
-          padding: "10px 14px",
-          borderRadius: 6,
-          background: "black",
-          color: "white",
-          textDecoration: "none"
-        }}
-      >
-        Target
-      </Link>
+
+
+
+
+
+
     </main>
   );
 }

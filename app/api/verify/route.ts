@@ -1,7 +1,10 @@
+export const runtime = "nodejs";
+
 // app/api/verify/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
 import { validateToken } from "@/lib/tokens";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
@@ -18,7 +21,7 @@ export async function POST(req: Request) {
     }
 
     // Activate the player and consume the token atomically
-    await prisma.$transaction(async (tx: typeof prisma) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       await tx.player.update({
         where: { id: t.playerId! },
         data: { status: "active" },
@@ -32,7 +35,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (e: unknown) {
-  const msg = e instanceof Error ? e.message : String(e);
-  return NextResponse.json({ ok: false, error: msg }, { status: 400 });
-}
+    const msg = e instanceof Error ? e.message : String(e);
+    return NextResponse.json({ ok: false, error: msg }, { status: 400 });
+  }
 }

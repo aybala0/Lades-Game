@@ -38,7 +38,7 @@ function ReportContent() {
       try {
         setTargetLoading(true);
         setTargetError(null);
-        const res = await fetch("/api/target-from-report", {
+        const res = await fetch("/api/report/preview", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token: tokenFromUrl }),

@@ -6,9 +6,10 @@ export function makeToken(bytes = 32) {
 }
 
 export async function createEmailToken(opts: {
-  playerId: string;
-  purpose: "verify" | "target" | "report";
+  playerId?: string | null;
+  purpose: "verify" | "target" | "report" | "confirm_elim" | "dispute_elim";
   ttlMinutes?: number; 
+  reportId?: string | null;
 }) {
   const token = makeToken();
   const ttl = (opts.ttlMinutes ?? 120) * 60 * 1000; // ms
@@ -18,7 +19,8 @@ export async function createEmailToken(opts: {
     data: {
       token,
       purpose: opts.purpose,
-      playerId: opts.playerId,
+      playerId: opts.playerId ?? null,
+      reportId: opts.reportId ?? null,
       expiresAt,
       consumed: false,
     },
@@ -29,7 +31,7 @@ export async function createEmailToken(opts: {
 
 export async function validateToken(
   token: string,
-  purpose: "verify" | "target" | "report"
+  purpose: "verify" | "target" | "report" | "confirm_elim" | "dispute_elim"
 ) {
   if (!token) return null;
   const row = await prisma.emailToken.findUnique({ where: { token } });

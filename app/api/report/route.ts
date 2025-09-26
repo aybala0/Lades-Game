@@ -5,12 +5,11 @@ import type { Prisma } from "@prisma/client";
 import { validateToken, createEmailToken } from "@/lib/tokens";
 import { sendMail } from "@/lib/email";
 
-type PlayerLite = { id: string; name: string; email: string; status: string };
+export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   try {
-    const { token} = await req.json();
-
+    const { token } = await req.json();
     if (!token) {
       return NextResponse.json({ ok: false, error: "missing token" }, { status: 400 });
     }
@@ -31,204 +30,108 @@ export async function POST(req: Request) {
     }
     const { roundId, targetId } = hunterEdge;
 
-    // 3) fetch the target's edge (target -> targetTarget) to rewire the ring
-    const targetEdge = await prisma.assignment.findFirst({
-      where: { roundId, hunterId: targetId, active: true },
-    });
-    if (!targetEdge) {
-      return NextResponse.json({ ok: false, error: "target edge not found" }, { status: 400 });
+    // 2a) load current statuses of hunter and target, and block if already in review
+    const [hunter, target] = await prisma.$transaction([
+      prisma.player.findUnique({
+        where: { id: hunterId },
+        select: { status: true, name: true, email: true },
+      }),
+      prisma.player.findUnique({
+        where: { id: targetId },
+        select: { status: true, name: true, email: true },
+      }),
+    ]);
+    if (!hunter || !target) {
+      return NextResponse.json({ ok: false, error: "player(s) not found" }, { status: 400 });
+    }
+    if (hunter.status === "elimination_in_progress") {
+      return NextResponse.json(
+        { ok: false, error: "You can’t report while your own elimination is under review." },
+        { status: 409 }
+      );
+    }
+    if (target.status === "elimination_in_progress") {
+      return NextResponse.json(
+        { ok: false, error: "This target is already under elimination review." },
+        { status: 409 }
+      );
     }
 
-    // 4) run everything atomically
-    const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      // a) create report (auto-approve)
+    // 3) stage the elimination: create pending report + set target to elimination_in_progress + consume hunter token
+    const pendingUntil = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const { reportId } = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const report = await tx.report.create({
         data: {
           roundId,
           hunterId,
           targetId,
-          status: "approved",
+          status: "pending",
+          pendingUntil,
         },
         select: { id: true },
       });
 
-      // b) mark target eliminated
       await tx.player.update({
         where: { id: targetId },
-        data: { status: "eliminated" },
+        data: { status: "elimination_in_progress" },
       });
 
-      // c) remove current active edges for hunter and target
-      await tx.assignment.delete({ where: { id: targetEdge.id } });
-      await tx.assignment.delete({ where: { id: hunterEdge.id } });
-
-      // d) if more than 2 players remain, create a new edge hunter -> targetTarget
-      const remainingActivePlayers = await tx.player.count({
-        where: { status: { not: "eliminated" } },
-      });
-
-      let newAssignmentId: string | null = null;
-      if (remainingActivePlayers > 1) {
-        const newA = await tx.assignment.create({
-          data: {
-            roundId,
-            hunterId,
-            targetId: targetEdge.targetId,
-            active: true,
-          },
-          select: { id: true },
-        });
-        newAssignmentId = newA.id;
-      } else {
-        // auto-end the round when 1 remain
-        await tx.round.update({
-          where: { id: roundId },
-          data: { status: "ended" },
-        });
-      }
-
-      // e) consume the report token so it can't be reused
+      // consume the hunter's report token so it can't be reused
       await tx.emailToken.update({
         where: { token },
         data: { consumed: true },
       });
 
-      return {
-        reportId: report.id,
-        nextTargetId: remainingActivePlayers > 1 ? targetEdge.targetId : null,
-        roundEnded: remainingActivePlayers <= 1,
-        newAssignmentId,
-      };
+      return { reportId: report.id };
     });
 
+    // 4) create 10‑minute tokens for the target (confirm / dispute), tied to this report
+    const [confirmToken, disputeToken] = await Promise.all([
+      createEmailToken({
+        playerId: targetId,
+        purpose: "confirm_elim",
+        ttlMinutes: 10,
+        reportId,
+      }),
+      createEmailToken({
+        playerId: targetId,
+        purpose: "dispute_elim",
+        ttlMinutes: 10,
+        reportId,
+      }),
+    ]);
 
-    try {
-  const [hunterPlayer, targetPlayer] = await Promise.all([
-    prisma.player.findUnique({
-      where: { id: hunterId },
-      select: { name: true, email: true },
-    }),
-    prisma.player.findUnique({
-      where: { id: targetId },
-      select: { name: true, email: true },
-    }),
-  ]);
+    // 5) email the target with both links
+    const baseUrl = process.env.APP_BASE_URL || "http://localhost:3000";
+    const confirmUrl = `${baseUrl}/report/confirm?token=${confirmToken}`;
+    const disputeUrl = `${baseUrl}/report/dispute?token=${disputeToken}`;
 
-//elimination email
-  if (targetPlayer?.email) {
-    const eliminatorName = hunterPlayer?.name ?? "another player";
-    const subject = "Lades - Elendiniz";
-    const html = `
-      <p>Merhaba ${targetPlayer.name},</p>
-      <p>Oyundan <strong>${eliminatorName}</strong> tarafından <strong>elendiniz</strong>.</p>
-      <p>Oynadığınız için teşekkürler!</p>
-    `;
-    const text =
-      `
-      <p>Merhaba ${targetPlayer.name},</p>
-      <p>Oyundan <strong>${eliminatorName}</strong> tarafından <strong>elendiniz</strong>.</p>
-      <p>Oynadığınız için teşekkürler!</p>
-    `;
-
-    await sendMail({
-      to: targetPlayer.email,
-      subject,
-      html,
-      text,
-    });
-  }
-} catch (err) {
-  console.error("Failed to send elimination email:", err);
-}
-
-
-// game end emails
-if (result.roundEnded) {
-  try {
-    const players: PlayerLite[] = await prisma.player.findMany({
-      select: { id: true, name: true, email: true, status: true },
-    });
-
-    const winner = players.find((p: PlayerLite) => p.status !== "eliminated");
-
-    for (const p of players) {
-      if (!p.email) continue;
-      try {
-        await sendMail({
-          to: p.email,
-          subject: "Lades - Oyunun Sonu",
-          html: `
-            <p>Merhaba ${p.name},</p>
-            <p>Lades oyunu sona erdi.</p>
-            ${
-              p.id === winner?.id
-                ? `<p><strong>Tebrikler, you are the last survivor!</strong></p>`
-                : `<p>Oynadığınız için teşekkürler.</p>`
-            }
-          `,
-          text:
-            `Hi ${p.name}\n` +
-            `The Assassin game is now over.\n` +
-            (p.id === winner?.id
-              ? "Congratulations, you are the last survivor!"
-              : "You were eliminated, but thanks for playing!"),
-        });
-      } catch (err) {
-        console.error("Failed to send end email:", p.email, err);
-      }
-    }
-  } catch (err) {
-    console.error("Game end email block failed:", err);
-  }
-}
-
-let newReportToken: string | null = null;
-let newTargetToken: string | null = null;
-if (!result.roundEnded) {
-  // create both tokens
-  [newReportToken, newTargetToken] = await Promise.all([
-    createEmailToken({
-      playerId: hunterId,
-      purpose: "report",
-      ttlMinutes: 60 * 24 * 7,
-    }),
-    createEmailToken({
-      playerId: hunterId,
-      purpose: "target",
-      ttlMinutes: 60 * 24 * 7,
-    }),
-  ]);
-
-  // send both links via email
-  const hunter = await prisma.player.findUnique({ where: { id: hunterId } });
-  if (hunter) {
-    const baseUrl = process.env.APP_BASE_URL;
-    const reportUrl = `${baseUrl}/report?token=${newReportToken}`;
-    const targetUrl = `${baseUrl}/target?token=${newTargetToken}`;
     try {
       await sendMail({
-        to: hunter.email,
-        subject: "Lades - Yeni Linkler",
+        to: target.email || "",
+        subject: "Elimination pending — respond within 10 minutes",
         html: `
-          <p>Merhaba ${hunter.name},</p>
-          <p>Eleme talebiniz gerçekleştirildi. Sonraki hedefinizi görmek, ve elemek için aşağıdaki linkleri 
-          (veya tokenları) kullanabilirsiniz:</p>
-          <ul>
-            <li>Yeni hedefini gör: <a href="${targetUrl}">${targetUrl}</a></li>
-            <li>Eliminasyon rapor etme: <a href="${reportUrl}">${reportUrl}</a></li>
-          </ul>
+          <p>Hi ${target.name},</p>
+          <p>Your opponent <strong>${hunter.name}</strong> reported that you were eliminated.</p>
+          <p>Please choose one within 10 minutes:</p>
+          <p><a href="${confirmUrl}">Yes, I'm eliminated</a> &nbsp;|&nbsp; <a href="${disputeUrl}">This was a mistake</a></p>
+          <p>If you do nothing, the system will auto-confirm after 10 minutes.</p>
         `,
-        text: `Hi ${hunter.name}\nReport link: ${reportUrl}\nTarget link: ${targetUrl}`,
+        text:
+          `Hi ${target.name}\n` +
+          `Your opponent ${hunter.name} reported that you were eliminated.\n\n` +
+          `Yes, I'm eliminated: ${confirmUrl}\n` +
+          `This was a mistake: ${disputeUrl}\n\n` +
+          `If you do nothing, the system will auto-confirm after 10 minutes.`,
       });
     } catch (err) {
-      console.error("sendMail failed for", hunter.email, err);
+      console.error("sendMail failed (pending notice):", err);
+      // not fatal; the report is staged
     }
-  }
-}
 
-    return NextResponse.json({ ok: true, ...result, newReportToken, newTargetToken });
+    return NextResponse.json({ ok: true, reportId, pendingUntil });
   } catch (e: unknown) {
-  const msg = e instanceof Error ? e.message : String(e);
-  return NextResponse.json({ ok: false, error: msg }, { status: 400 });
-}
+    const msg = e instanceof Error ? e.message : String(e);
+    return NextResponse.json({ ok: false, error: msg }, { status: 400 });
+  }
 }

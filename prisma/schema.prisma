@@ -22,6 +22,8 @@ model EmailToken {
   token     String   @unique
   expiresAt DateTime
   consumed  Boolean  @default(false)
+  reportId  String?             // which report this token belongs to (confirm/dispute)
+  @@index([reportId])
 }
 
 model Round {
@@ -49,4 +51,7 @@ model Report {
   targetId  String
   status    String   @default("pending") // pending|approved
   createdAt DateTime @default(now())
+  pendingUntil DateTime?  
+  approvedAt   DateTime?        
+  disputedAt   DateTime? 
 }

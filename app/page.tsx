@@ -109,11 +109,19 @@ export default function Home() {
         Hedefinizi görmek veya hedefinizi elemek için bu linklere basabilirsiniz. Veya, linkin sonuna doğru bulunan
         token=*uzun alfanumerik bir kod* kısmına gidip, bu kodu kopyalayıp, şu anda ana bulunduğunuz ana menüde yukarıda 
         gördüğünüz hedef eleme/hedefini gör menülerine girip bu &quot;token&quot;ınızı yapıştırabilirsiniz.
-
-
-     
       </p>
 
+      <p style={{ fontSize: 16, lineHeight: 1.5, marginBottom: 20 }}>
+        <b><span style={{ color: "#3F4739" , fontSize: 25}}>Tips & Tricks</span> </b>
+        <br/> 
+        1) Oyunu oynarken her zaman hedefinizin kim olduğunu bileceksiniz, ama sizi kimin hedeflediğini
+        bilmeyeceksiniz! Bu yüzden herkesin sizi ladeslemek için peşinizde olabileceğini bilin:)
+        <br/>
+        2) Yani, eğer birini ladeslemeye çalışırken başarısız olursanız, o kişi artık sizin onu ladeslemeye
+        çalıştığınızı anlayacak ve işiniz çok daha zor olacak!
+        3) Ladesin en önemli kurallarından birini hatırlatmış olalım: eğer biri size almanız için bir şey uzatıyorsa, 
+        <strong/> elinize almadan önce <strong/> &quot;aklımda&quot; diyebilirsiniz:)
+      </p>
 
 
       <Link

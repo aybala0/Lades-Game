@@ -18,15 +18,23 @@ import { sendMail } from "@/lib/email";
  *  - if game continues: issue hunter new report/target tokens and email them
  *  - if only 1 remains: end round
  */
-export async function GET() {
-  return handleAutoApprove();
+export async function GET(req: Request) {
+  return handleAutoApprove(req);
 }
 
-export async function POST() {
-  return handleAutoApprove();
+export async function POST(req: Request) {
+  return handleAutoApprove(req);
 }
 
-async function handleAutoApprove() {
+async function handleAutoApprove(req?: Request) {
+  // Optional auth guard for external cron pingers
+  const secret = process.env.CRON_SECRET;
+  if (secret && req) {
+    const auth = req.headers.get("authorization") || "";
+    if (auth !== `Bearer ${secret}`) {
+      return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
+    }
+  }
   const now = new Date();
 
   // Find all still-pending reports whose pendingUntil has passed

@@ -30,10 +30,22 @@ export async function POST(req: Request) {
         { status: 403 }
       );
     }
-
-
     const trimmedName = name.trim();
     const normalizedEmail = email.trim().toLowerCase();
+
+    const alreadysigned = await prisma.player.findFirst({
+      where: { email: normalizedEmail },
+      select: { id: true },
+    });
+    if (alreadysigned) {
+      return NextResponse.json(
+        { ok: false, error: "Daha önce bu emaille zaten kayıt oldunuz. Lütfen yalnızca bir kere kaydol." },
+        { status: 403 }
+      );
+    }
+
+
+
 
     const player = await prisma.player.upsert({
       where: { email: normalizedEmail },
@@ -56,7 +68,8 @@ export async function POST(req: Request) {
         subject: "Verify your signup",
         html: `
           <p>Merhaba ${player.name},</p>
-          <p>Oyuna katılmak için lütfen aşağıdaki linke tıklayarak verificationunu tamamla.:</p>
+          <p>Lades oyununa hoş geldin!</p>
+          <p>Oyuna katılmak için lütfen aşağıdaki linke tıklayarak verificationunu tamamla:</p>
           <p><a href="${verifyUrl}">${verifyUrl}</a></p>
         `,
         text: `Hi ${player.name}\nVerify link: ${verifyUrl}`,

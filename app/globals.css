@@ -30,6 +30,7 @@ body {
   display: inline-block;
   text-align: center;
   font-size: clamp(14px, 2.5vw, 18px); 
+  box-shadow: 1px 1px 3px black
 }
 
 .btn:hover {

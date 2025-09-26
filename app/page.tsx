@@ -126,14 +126,7 @@ export default function Home() {
 
       <Link
         href="/admin/login"
-        style={{
-          padding: "10px 14px",
-          borderRadius: 6,
-          background: "#F1BF98",
-          color: "white",
-          textDecoration: "none",
-          marginRight: "20px"
-        }}
+         className="btn"
       >
         Admin Login
       </Link>

@@ -20,6 +20,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "valid email required" }, { status: 400 });
     }
 
+    const activeRound = await prisma.round.findFirst({
+      where: { status: "active" },
+      select: { id: true },
+    });
+    if (activeRound) {
+      return NextResponse.json(
+        { ok: false, error: "Signups are closed: a game is currently in progress." },
+        { status: 403 }
+      );
+    }
+
+
     const trimmedName = name.trim();
     const normalizedEmail = email.trim().toLowerCase();
 

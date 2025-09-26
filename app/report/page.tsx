@@ -1,7 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
-import {useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
@@ -25,6 +24,38 @@ function ReportContent() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ReportOk | null>(null);
 
+  const [targetName, setTargetName] = useState<string | null>(null);
+  const [targetLoading, setTargetLoading] = useState(false);
+  const [targetError, setTargetError] = useState<string | null>(null);
+  const fetchedTargetRef = useRef(false);
+
+  useEffect(() => {
+    if (!tokenFromUrl) return;
+    if (fetchedTargetRef.current) return;
+    fetchedTargetRef.current = true;
+
+    (async () => {
+      try {
+        setTargetLoading(true);
+        setTargetError(null);
+        const res = await fetch("/api/target-from-report", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: tokenFromUrl }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          setTargetError(data.error || "Could not fetch target");
+          return;
+        }
+        setTargetName(data.target?.name ?? null);
+      } catch (err) {
+        setTargetError("Network error");
+      } finally {
+        setTargetLoading(false);
+      }
+    })();
+  }, [tokenFromUrl]);
 
   async function submitReport(tok: string) {
     if (!tok) {
@@ -64,26 +95,34 @@ function ReportContent() {
       <h1 className="text-2xl font-semibold"> Eliminasyon Bildir</h1>
 
       {tokenFromUrl && (
-  <div className="space-y-3 rounded border p-4 bg-gray-50">
-    <p>
-      Bir eliminasyon linki açtınız. Eğer confirme tıklarsanız, şu anki hedefiniz oyundan elenecektir. 
-      Onaylıyor musunuz?
-    </p>
-    <div className="flex gap-2">
-      <button
-        onClick={() => submitReport(tokenFromUrl)}
-        disabled={loading}
-        className="rounded bg-black text-white px-4 py-2 disabled:opacity-60"
-      >
-        {loading ? "Submitting…" : "Onayla"}
-      </button>
-      <Link href="/" className="rounded border px-4 py-2 hover:bg-gray-100">Go back</Link>
-    </div>
-    <p className="text-xs text-gray-500">
-      Tip: Bu linki kimseyle paylaşmayın. Bu linke sahip olan biri sizin adınıza oyuncuları eleyebilir.
-    </p>
-  </div>
-)}
+        <div className="space-y-3 rounded border p-4 bg-gray-50">
+          <p>
+            Bir eliminasyon linki açtınız. Eğer <strong>Onayla</strong>&apos;ya tıklarsanız, şu anki hedefiniz{" "}
+            <strong>
+              {targetLoading ? "yükleniyor…" : targetName ?? (targetError ? "(hedef bulunamadı)" : "bilinmiyor")}
+            </strong>{" "}
+            oyundan elenecektir. Onaylıyor musunuz?
+          </p>
+
+          {targetError && (
+            <p className="text-sm text-red-600">Hedef bilgisi alınamadı: {targetError}</p>
+          )}
+
+          <div className="flex gap-2">
+            <button
+              onClick={() => submitReport(tokenFromUrl)}
+              disabled={loading}
+              className="rounded bg-black text-white px-4 py-2 disabled:opacity-60"
+            >
+              {loading ? "Submitting…" : "Onayla"}
+            </button>
+            <Link href="/" className="rounded border px-4 py-2 hover:bg-gray-100">Go back</Link>
+          </div>
+          <p className="text-xs text-gray-500">
+            Tip: Bu linki kimseyle paylaşmayın. Bu linke sahip olan biri sizin adınıza oyuncuları eleyebilir.
+          </p>
+        </div>
+      )}
 
       {/* If no token in URL, show paste box */}
       {!tokenFromUrl && (

@@ -103,8 +103,11 @@ export async function POST(req: Request) {
 
     // 5) email the target with both links
     const baseUrl = process.env.APP_BASE_URL || "http://localhost:3000";
-    const confirmUrl = `${baseUrl}/report/confirm?token=${confirmToken}`;
-    const disputeUrl = `${baseUrl}/report/dispute?token=${disputeToken}`;
+    const confirmUrl = new URL("/api/report/confirm", baseUrl);
+    confirmUrl.searchParams.set("token", confirmToken);
+
+    const disputeUrl = new URL("/api/report/dispute", baseUrl);
+    disputeUrl.searchParams.set("token", disputeToken);
 
     try {
       await sendMail({
@@ -114,14 +117,14 @@ export async function POST(req: Request) {
           <p>Hi ${target.name},</p>
           <p>Your opponent <strong>${hunter.name}</strong> reported that you were eliminated.</p>
           <p>Please choose one within 10 minutes:</p>
-          <p><a href="${confirmUrl}">Yes, I'm eliminated</a> &nbsp;|&nbsp; <a href="${disputeUrl}">This was a mistake</a></p>
+          <p><a href="${confirmUrl.toString()}">Yes, I'm eliminated</a> &nbsp;|&nbsp; <a href="${disputeUrl.toString()}">This was a mistake</a></p>
           <p>If you do nothing, the system will auto-confirm after 10 minutes.</p>
         `,
         text:
           `Hi ${target.name}\n` +
           `Your opponent ${hunter.name} reported that you were eliminated.\n\n` +
-          `Yes, I'm eliminated: ${confirmUrl}\n` +
-          `This was a mistake: ${disputeUrl}\n\n` +
+          `Yes, I'm eliminated: ${confirmUrl.toString()}\n` +
+          `This was a mistake: ${disputeUrl.toString()}\n\n` +
           `If you do nothing, the system will auto-confirm after 10 minutes.`,
       });
     } catch (err) {

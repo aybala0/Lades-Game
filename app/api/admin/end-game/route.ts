@@ -1,6 +1,7 @@
 // app/api/admin/end-game/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
 
 /**
  * POST /api/admin/end-game
@@ -15,7 +16,7 @@ export async function POST() {
     // find any active round (ok if none)
     const activeRound = await prisma.round.findFirst({ where: { status: "active" } });
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // deactivate all active assignments (global — single game model)
       await tx.assignment.updateMany({
         where: { active: true },

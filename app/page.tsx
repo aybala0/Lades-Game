@@ -109,6 +109,11 @@ export default function Home() {
         Hedefinizi görmek veya hedefinizi elemek için bu linklere basabilirsiniz. Veya, linkin sonuna doğru bulunan
         token=*uzun alfanumerik bir kod* kısmına gidip, bu kodu kopyalayıp, şu anda ana bulunduğunuz ana menüde yukarıda 
         gördüğünüz hedef eleme/hedefini gör menülerine girip bu &quot;token&quot;ınızı yapıştırabilirsiniz.
+
+        Peki eğer biri sizi yanlışlıkla (veya art niyetle) gerçekten ladeslememişken, linke basarak elemek isterse?
+        Bunun için bir onay sistemi koyuldu. A, B kişisini elemek için linke tıkladığında B kişisine bir email gidecek.
+        Emailde &quot;Evet gerçekten elendim&quot; veya &quot;This was a mistake, gerçekten elenmedim&quot; diye iki opsiyon olacak. 
+        Eğer iki linke de 10 dakika içinde tıklanmazsa, otomatik olarak elenmiş sayılacak.
       </p>
 
       <p style={{ fontSize: 16, lineHeight: 1.5, marginBottom: 20 }}>

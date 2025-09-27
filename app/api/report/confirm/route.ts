@@ -89,10 +89,9 @@ async function handleConfirm(token: string) {
         data: { status: "eliminated" },
       });
 
-      // c) deactivate the target's own active edge
-      await tx.assignment.update({
+      // c) remove the target's own active edge (delete to avoid unique conflicts on (roundId,targetId))
+      await tx.assignment.delete({
         where: { id: targetEdge.id },
-        data: { active: false },
       });
 
       // d) update hunter's edge to point at target's target (rewire ring)

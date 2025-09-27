@@ -97,10 +97,10 @@ export async function POST(req: Request) {
 
     // 5) email the target with both links
     const baseUrl = process.env.APP_BASE_URL || "http://localhost:3000";
-    const confirmUrl = new URL("/api/report/confirm", baseUrl);
+    const confirmUrl = new URL("/report/confirm", baseUrl);
     confirmUrl.searchParams.set("token", confirmToken);
 
-    const disputeUrl = new URL("/api/report/dispute", baseUrl);
+    const disputeUrl = new URL("/report/dispute", baseUrl);
     disputeUrl.searchParams.set("token", disputeToken);
 
     try {

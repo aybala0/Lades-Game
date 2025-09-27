@@ -156,14 +156,16 @@ function ReportContent() {
             <p>Oyun bitti! 🎉</p>
           ) : (
             <>
-              <p>Yeni rapor tokenınız (bir sonraki eliminasyonunuz için):</p>
+              <p>Raporunuz onaylandığında size bir mail gelecek. Sonraki hedefinizin kim olduğunu
+                görmek için ve onu elemek için gereken linkler, raporunuz onaylandıktan sonra maille
+                iletilecek.
+              </p>
               {result.newReportToken ? (
                 <code className="block break-all bg-white border p-2 rounded">
                   {result.newReportToken}
                 </code>
               ) : (
                 <p className="text-sm text-gray-600">
-                  (Size yeni bir token emaillenecek)
                 </p>
               )}
             </>

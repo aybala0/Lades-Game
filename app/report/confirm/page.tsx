@@ -7,7 +7,6 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 
-
 function ConfirmEliminationContent() {
   const params = useSearchParams();
   const token = params.get("token");

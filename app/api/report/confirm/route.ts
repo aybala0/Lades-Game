@@ -49,6 +49,9 @@ async function handleConfirm(token: string) {
       // idempotent: if already finalized, just return ok
       return NextResponse.json({ ok: true, alreadyFinalized: true });
     }
+    if (t.playerId !== report.targetId) {
+      return NextResponse.json({ ok: false, error: "token does not belong to the target" }, { status: 403 });
+    }
 
     // find the target's edge (target -> targetTarget) in the same round
     const targetEdge = await prisma.assignment.findFirst({
@@ -57,6 +60,13 @@ async function handleConfirm(token: string) {
     });
     if (!targetEdge) {
       return NextResponse.json({ ok: false, error: "target edge not found" }, { status: 400 });
+    }
+    const hunterEdge = await prisma.assignment.findFirst({
+      where: { roundId: report.roundId, hunterId: report.hunterId, active: true },
+      select: { id: true },
+    });
+    if (!hunterEdge) {
+      return NextResponse.json({ ok: false, error: "hunter edge not found" }, { status: 400 });
     }
 
     // also fetch hunter/player emails for notification later
@@ -87,13 +97,7 @@ async function handleConfirm(token: string) {
 
       // d) update hunter's edge to point at target's target (rewire ring)
       const updatedHunterEdge = await tx.assignment.update({
-        where: { // hunter has exactly one active edge in this round
-          // Use a unique finder if you have one; otherwise findFirst earlier and pass id.
-          id: (await tx.assignment.findFirst({
-            where: { roundId: report.roundId, hunterId: report.hunterId, active: true },
-            select: { id: true },
-          }))!.id,
-        },
+        where: { id: hunterEdge.id },
         data: { targetId: targetEdge.targetId }, // stays active
         select: { id: true, targetId: true },
       });

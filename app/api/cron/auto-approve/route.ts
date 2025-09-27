@@ -27,11 +27,15 @@ export async function POST(req: Request) {
 }
 
 async function handleAutoApprove(req?: Request) {
-  // Optional auth guard for external cron pingers
-  const secret = process.env.CRON_SECRET;
-  if (secret && req) {
+  // Optional auth guard for external cron pingers (query param or Bearer header)
+  const expected = process.env.CRON_SECRET;
+  if (expected && req) {
+    const url = new URL(req.url);
+    const qs = url.searchParams.get("secret");
     const auth = req.headers.get("authorization") || "";
-    if (auth !== `Bearer ${secret}`) {
+    const bearer = auth.startsWith("Bearer ") ? auth.slice(7) : null;
+
+    if (qs !== expected && bearer !== expected) {
       return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
     }
   }

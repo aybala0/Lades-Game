@@ -101,9 +101,9 @@ async function handleConfirm(token: string) {
         select: { id: true, targetId: true },
       });
 
-      // e) count how many players remain (not eliminated)
+      // e) count how many players remain (truly active)
       const remainingActivePlayers = await tx.player.count({
-        where: { status: { not: "eliminated" } },
+        where: { status: "active" },
       });
 
       // f) consume both confirm and dispute tokens for this report (belt & suspenders)
@@ -185,7 +185,39 @@ async function handleConfirm(token: string) {
         console.error("sendMail failed (confirm notify hunter):", err);
       }
     } else {
-      // Optionally: email everyone the game ended (you already have end-game emails elsewhere)
+      // Round ended here: notify all players with a final email
+      try {
+        type PlayerLite = { id: string; name: string; email: string | null; status: string };
+        const players: PlayerLite[] = await prisma.player.findMany({
+          select: { id: true, name: true, email: true, status: true },
+        });
+        const winner = players.find((p) => p.status === "active");
+
+        for (const p of players) {
+          if (!p.email) continue;
+          await sendMail({
+            to: p.email,
+            subject: "The game has ended",
+            html: `
+              <p>Hi ${p.name},</p>
+              <p>The Assassin game is now over.</p>
+              ${
+                winner && p.id === winner.id
+                  ? `<p><strong>Congratulations, you are the last survivor!</strong></p>`
+                  : `<p>Thanks for playing!</p>`
+              }
+            `,
+            text:
+              `Hi ${p.name}\n` +
+              `The Assassin game is now over.\n` +
+              (winner && p.id === winner.id
+                ? "Congratulations, you are the last survivor!"
+                : "Thanks for playing!"),
+          });
+        }
+      } catch (err) {
+        console.error("end-of-game email failed (confirm):", err);
+      }
     }
 
     return NextResponse.json({

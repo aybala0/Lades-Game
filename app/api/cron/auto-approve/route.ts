@@ -7,6 +7,8 @@ import type { Prisma } from "@prisma/client";
 import { createEmailToken } from "@/lib/tokens";
 import { sendMail } from "@/lib/email";
 
+type PlayerLite = { id: string; name: string; email: string | null; status: string };
+
 /**
  * Auto-approve any pending elimination reports whose pendingUntil has passed.
  * Safe to call repeatedly (idempotent).
@@ -98,10 +100,9 @@ async function handleAutoApprove(req?: Request) {
           data: { status: "eliminated" },
         });
 
-        // c) deactivate target's active edge
-        await tx.assignment.update({
+        // c) remove target's active edge to free (roundId,targetId) for rewiring
+        await tx.assignment.delete({
           where: { id: targetEdge.id },
-          data: { active: false },
         });
 
         // d) update hunter's current active edge to targetTarget
@@ -132,7 +133,7 @@ async function handleAutoApprove(req?: Request) {
 
         // f) count remaining players
         const remainingActivePlayers = await tx.player.count({
-          where: { status: { not: "eliminated" } },
+          where: { status: "active" },
         });
 
         let roundEnded = false;
@@ -190,6 +191,40 @@ async function handleAutoApprove(req?: Request) {
           }
         } catch (err) {
           console.error("sendMail failed (auto-approve notify hunter):", err);
+        }
+      }
+
+      // If the round ended here, notify all players with a final email
+      if (!txResult.alreadyFinalized && txResult.roundEnded) {
+        try {
+          const players: PlayerLite[] = await prisma.player.findMany({
+            select: { id: true, name: true, email: true, status: true },
+          });
+          const winner = players.find((p) => p.status === "active");
+          for (const p of players) {
+            if (!p.email) continue;
+            await sendMail({
+              to: p.email,
+              subject: "The game has ended",
+              html: `
+                <p>Hi ${p.name},</p>
+                <p>The Assassin game is now over.</p>
+                ${
+                  winner && p.id === winner.id
+                    ? `<p><strong>Congratulations, you are the last survivor!</strong></p>`
+                    : `<p>Thanks for playing!</p>`
+                }
+              `,
+              text:
+                `Hi ${p.name}\n` +
+                `The Assassin game is now over.\n` +
+                (winner && p.id === winner.id
+                  ? "Congratulations, you are the last survivor!"
+                  : "Thanks for playing!"),
+            });
+          }
+        } catch (err) {
+          console.error("end-of-game email failed (auto-approve):", err);
         }
       }
 

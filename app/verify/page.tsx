@@ -27,7 +27,7 @@ function VerifyContent() {
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error || "Verify failed");
         setStatus("ok");
-        setMsg("Kayıt tamamlandı! Artık oyuna dahilsiniz 🎉");
+        setMsg("Oldu! Artık oyuna dahilsiniz 🎉");
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : "Verify failed";
         setStatus("error");

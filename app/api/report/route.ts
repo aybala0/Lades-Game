@@ -76,12 +76,6 @@ export async function POST(req: Request) {
         data: { status: "elimination_in_progress" },
       });
 
-      // consume the hunter's report token so it can't be reused
-      await tx.emailToken.update({
-        where: { token },
-        data: { consumed: true },
-      });
-
       return { reportId: report.id };
     });
 

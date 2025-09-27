@@ -113,6 +113,16 @@ async function handleConfirm(token: string) {
         data: { consumed: true },
       });
 
+      // f2) rotate hunter's existing report tokens (consume any still-unconsumed)
+      await tx.emailToken.updateMany({
+        where: {
+          playerId: report.hunterId,
+          purpose: "report",
+          consumed: false,
+        },
+        data: { consumed: true },
+      });
+
       // g) optionally end the round if only one remains
       let roundEnded = false;
       if (remainingActivePlayers <= 1) {

@@ -37,6 +37,9 @@ async function handleDispute(token: string) {
       select: { id: true, status: true, hunterId: true, targetId: true },
     });
     if (!report) return NextResponse.json({ ok: false, error: "report not found" }, { status: 400 });
+    if (t.playerId !== report.targetId) {
+      return NextResponse.json({ ok: false, error: "token does not belong to the target" }, { status: 403 });
+    }
     if (report.status !== "pending") {
       return NextResponse.json({ ok: true, alreadyFinalized: true });
     }
@@ -55,8 +58,13 @@ async function handleDispute(token: string) {
         where: { id: report.targetId },
         data: { status: "active" },
       });
-      await tx.emailToken.update({
-        where: { token },
+      // consume this dispute token and any sibling confirm/dispute tokens for the same report
+      await tx.emailToken.updateMany({
+        where: {
+          reportId: report.id,
+          purpose: { in: ["dispute_elim", "confirm_elim"] },
+          consumed: false,
+        },
         data: { consumed: true },
       });
     });

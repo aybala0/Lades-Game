@@ -15,6 +15,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Lades",
   description: "TSA için bir oyun!",
+  icons: {
+    icon: "/favicon.ico",          // for browsers
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png" // for iOS homescreens
+  }
 };
 
 export const viewport = {

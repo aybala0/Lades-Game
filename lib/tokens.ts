@@ -12,7 +12,7 @@ export async function createEmailToken(opts: {
   reportId?: string | null;
 }) {
   const token = makeToken();
-  const ttl = (opts.ttlMinutes ?? 120) * 60 * 1000; // ms
+  const ttl = (opts.ttlMinutes ?? 60 * 24 * 90) * 60 * 1000; // ms
   const expiresAt = new Date(Date.now() + ttl);
 
   await prisma.emailToken.create({

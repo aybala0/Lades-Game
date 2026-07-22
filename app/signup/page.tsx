@@ -31,7 +31,7 @@ export default function SignupPage() {
         throw new Error(data.error || "Signup failed");
       }
 
-      setMsg("Oldu! Verification için lütfen sana gelen emaildeki linke tıkla!");
+      setMsg("Done! Please click the link in the email we sent you to verify!");
       // For now, also show the verify link (useful until email sending is wired)
       
       setName("");
@@ -46,29 +46,29 @@ export default function SignupPage() {
 
   return (
     <main className="mx-auto max-w-md p-6 space-y-4">
-      <h1 className="text-2xl font-semibold">Oyuna Katıl</h1>
+      <h1 className="text-2xl font-semibold">Join the Game</h1>
       <form onSubmit={onSubmit} className="space-y-3">
         <div>
           <label className="title">
-            Adınız 
+            Your Name
             <span className="block text-xs text-[#717568]">
-              Lütfen tam adınızı girin, diğer oyuncular sizi böyle görecekler!
+              Please enter your full name — other players will see you by this name!
             </span>
           </label>
-          
+
           <input
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full rounded border px-3 py-2"
-            placeholder="Ad Soyad"
+            placeholder="Full Name"
           />
         </div>
         <div>
           <label className="title">
-            Email 
+            Email
             <span className="block text-xs text-[#717568]">
-              Oyun içi iletişmimiz emailler üzerinden olacak.
+              In-game communication will happen over email.
             </span>
           </label>
           <input

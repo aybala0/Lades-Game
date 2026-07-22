@@ -13,7 +13,7 @@ function VerifyContent() {
   useEffect(() => {
     if (!token) {
       setStatus("error");
-      setMsg("Eksik link: token yok.");
+      setMsg("Missing link: no token.");
       return;
     }
 
@@ -27,7 +27,7 @@ function VerifyContent() {
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error || "Verify failed");
         setStatus("ok");
-        setMsg("Oldu! Artık oyuna dahilsiniz 🎉");
+        setMsg("Done! You're now in the game 🎉");
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : "Verify failed";
         setStatus("error");
@@ -40,8 +40,8 @@ function VerifyContent() {
 
   return (
     <main className="mx-auto max-w-md p-6">
-      <h1 className="text-2xl font-semibold mb-4">Kayıt Verification</h1>
-      {status === "loading" && <p>Doğrulama yapılıyor...</p>}
+      <h1 className="text-2xl font-semibold mb-4">Signup Verification</h1>
+      {status === "loading" && <p>Verifying...</p>}
       {status === "ok" && <p className="text-green-700">{msg}</p>}
       {status === "error" && <p className="text-red-600">{msg}</p>}
     </main>

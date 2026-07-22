@@ -35,25 +35,25 @@ export async function POST() {
   for (const p of players) {
     if (!p.email) continue;
 
-    const subject = "Lades — Oyun Güncellemesi";
+    const subject = "Lades — Game Update";
     const html = `
-      <p>Merhaba ${p.name},</p>
-      <p>Lades oyunundan bir update:</p>
+      <p>Hi ${p.name},</p>
+      <p>An update from the Lades game:</p>
       <ul>
-        <li>Şu ana kadar elenen oyuncu sayısı: <strong>${eliminated}</strong></li>
-        <li>Kalan oyuncu sayısı: <strong>${remaining}</strong></li>
+        <li>Players eliminated so far: <strong>${eliminated}</strong></li>
+        <li>Players remaining: <strong>${remaining}</strong></li>
       </ul>
-      <p>İyi şanslar!</p>
+      <p>Good luck!</p>
     `;
     const text =
 `
-      <p>Merhaba ${p.name},</p>
-      <p>Lades oyunundan bir update:</p>
+      <p>Hi ${p.name},</p>
+      <p>An update from the Lades game:</p>
       <ul>
-        <li>Şu ana kadar elenen oyuncu sayısı: <strong>${eliminated}</strong></li>
-        <li>Kalan oyuncu sayısı: <strong>${remaining}</strong></li>
+        <li>Players eliminated so far: <strong>${eliminated}</strong></li>
+        <li>Players remaining: <strong>${remaining}</strong></li>
       </ul>
-      <p>İyi şanslar!</p>
+      <p>Good luck!</p>
     `;
 
     try {

@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     });
     if (alreadysigned) {
       return NextResponse.json(
-        { ok: false, error: "Daha önce bu emaille zaten kayıt oldunuz. Lütfen yalnızca bir kere kaydol." },
+        { ok: false, error: "You've already signed up with this email. Please sign up only once." },
         { status: 403 }
       );
     }
@@ -67,9 +67,9 @@ export async function POST(req: Request) {
         to: player.email,
         subject: "Verify your signup",
         html: `
-          <p>Merhaba ${player.name},</p>
-          <p>Lades oyununa hoş geldin!</p>
-          <p>Oyuna katılmak için lütfen aşağıdaki linke tıklayarak verificationunu tamamla:</p>
+          <p>Hi ${player.name},</p>
+          <p>Welcome to the Lades game!</p>
+          <p>To join the game, please click the link below to complete your verification:</p>
           <p><a href="${verifyUrl}">${verifyUrl}</a></p>
         `,
         text: `Hi ${player.name}\nVerify link: ${verifyUrl}`,

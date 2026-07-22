@@ -92,20 +92,20 @@ function ReportContent() {
 
   return (
     <main className="mx-auto max-w-md p-6 space-y-4">
-      <h1 className="text-2xl font-semibold"> Eliminasyon Bildir</h1>
+      <h1 className="text-2xl font-semibold"> Report Elimination</h1>
 
       {tokenFromUrl && (
         <div className="space-y-3 rounded border p-4 bg-gray-50">
           <p>
-            Bir eliminasyon linki açtınız. Eğer <strong>Onayla</strong>&apos;ya tıklarsanız, şu anki hedefiniz{" "}
+            You opened an elimination link. If you click <strong>Confirm</strong>, your current target{" "}
             <strong>
-              {targetLoading ? "yükleniyor…" : targetName ?? (targetError ? "(hedef bulunamadı)" : "bilinmiyor")}
+              {targetLoading ? "loading…" : targetName ?? (targetError ? "(target not found)" : "unknown")}
             </strong>{" "}
-            oyundan elenecektir. Onaylıyor musunuz?
+            will be eliminated from the game. Do you confirm?
           </p>
 
           {targetError && (
-            <p className="text-sm text-red-600">Hedef bilgisi alınamadı: {targetError}</p>
+            <p className="text-sm text-red-600">Could not fetch target info: {targetError}</p>
           )}
 
           <div className="flex gap-2">
@@ -114,12 +114,12 @@ function ReportContent() {
               disabled={loading}
               className="rounded bg-black text-white px-4 py-2 disabled:opacity-60"
             >
-              {loading ? "Submitting…" : "Onayla"}
+              {loading ? "Submitting…" : "Confirm"}
             </button>
             <Link href="/" className="rounded border px-4 py-2 hover:bg-gray-100">Go back</Link>
           </div>
           <p className="text-xs text-gray-500">
-            Tip: Bu linki kimseyle paylaşmayın. Bu linke sahip olan biri sizin adınıza oyuncuları eleyebilir.
+            Tip: Don&apos;t share this link with anyone. Anyone with this link can eliminate players on your behalf.
           </p>
         </div>
       )}
@@ -128,11 +128,11 @@ function ReportContent() {
       {!tokenFromUrl && (
         <form onSubmit={onSubmit} className="space-y-3">
           <div>
-            <label className="block text-sm mb-1">Eliminasyon Tokenı</label>
+            <label className="block text-sm mb-1">Elimination Token</label>
             <input
               value={token}
               onChange={(e) => setToken(e.target.value)}
-              placeholder="Eliminasyon token'ınızı yapıştırın"
+              placeholder="Paste your elimination token"
               className="w-full rounded border px-3 py-2"
             />
           </div>
@@ -141,7 +141,7 @@ function ReportContent() {
             disabled={loading || !token}
             className="btn"
           >
-            {loading ? "Submitting…" : "Onayla"}
+            {loading ? "Submitting…" : "Confirm"}
           </button>
         </form>
       )}
@@ -151,14 +151,14 @@ function ReportContent() {
 
       {result && (
         <div className="rounded border p-4 bg-gray-50 space-y-2">
-          <p className="text-green-700">Rapor alındı! ✅</p>
+          <p className="text-green-700">Report received! ✅</p>
           {result.roundEnded ? (
-            <p>Oyun bitti! 🎉</p>
+            <p>The game has ended! 🎉</p>
           ) : (
             <>
-              <p>Raporunuz onaylandığında size bir mail gelecek. Sonraki hedefinizin kim olduğunu
-                görmek için ve onu elemek için gereken linkler, raporunuz onaylandıktan sonra maille
-                iletilecek.
+              <p>You&apos;ll get an email once your report is approved. The links to see your next
+                target and to report their elimination will be sent by email once your report is
+                approved.
               </p>
               {result.newReportToken ? (
                 <code className="block break-all bg-white border p-2 rounded">
@@ -175,7 +175,7 @@ function ReportContent() {
 
       <p className="mt-6">
         <Link href="/" className="underline text-blue-600 hover:text-blue-800">
-          ← Ana Menü
+          ← Main Menu
         </Link>
       </p>
     </main>

@@ -208,7 +208,7 @@ async function handleAutoApprove(req?: Request) {
               subject: "The game has ended",
               html: `
                 <p>Hi ${p.name},</p>
-                <p>Lades oyunu bitmiştir.</p>
+                <p>The Lades game has ended.</p>
                 ${
                   winner && p.id === winner.id
                     ? `<p><strong>Congratulations, you are the last survivor!</strong></p>`

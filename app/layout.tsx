@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Lades",
-  description: "TSA için bir oyun!",
+  description: "A game for TSA!",
   icons: {
     icon: "/favicon.ico",          // for browsers
     shortcut: "/favicon.ico",

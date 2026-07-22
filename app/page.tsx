@@ -26,29 +26,29 @@ export default function Home() {
         everyone another reason to talk to and interact with each other, and it might open up a
         way for our new members to get to know everyone more closely. Also, since I had to manage
         the game myself back then (doing everything by hand, from sending emails manually to
-        setting up the cycle) I never actually got to play it in high school — so now I've
+        setting up the cycle) I never actually got to play it in high school — so now I’ve
         automated it so no one needs to manage it.
         That means I finally get to play too!
         <br />
         <br /> <b><span style={{ color: "#3F4739", fontSize: 25}}>What Is Assassin?</span> </b>
         <br />
-        It's usually played as a community building activity — a long-term game format. A game
-        can last for months; it's something that runs in the background of people's everyday
+        It’s usually played as a community building activity — a long-term game format. A game
+        can last for months; it’s something that runs in the background of people’s everyday
         lives while life goes on. Each Assassin game can have a different elimination method — for
-        example, some I've heard of before include taking a photo of the person you need to
+        example, some I’ve heard of before include taking a photo of the person you need to
         eliminate, or sticking a post-it note on their back.
         <br />
         <br /> <b><span style={{ color: "#3F4739" , fontSize: 25}}>How Is the Game Played?</span> </b>
         <br />
         When the game starts, everyone is given a target player, so the players end up arranged in
-        a chain. For example, let's say A, B, C, D, and E are playing a game:
+        a chain. For example, let’s say A, B, C, D, and E are playing a game:
       </p>
       <div style={{ display: "flex", justifyContent: "center", margin: "1rem 0" }}>
         <Image src="/images/cycle1.png" alt="cycle1" width={300} height={300} />
       </div>
 
       <p style={{ fontSize: 16, lineHeight: 1.5, marginBottom: 20 }}>
-        Let's say that, a few days later, D eliminates their target, B:
+        Let’s say that, a few days later, D eliminates their target, B:
       </p>
 
       <div style={{display: "flex", justifyContent: "center", gap: "1rem",}}
@@ -70,8 +70,8 @@ export default function Home() {
       </div>
 
       <p style={{ fontSize: 16, lineHeight: 1.5, marginBottom: 20 }}>
-        In this case, B is out of the game (and gets an email saying they've been eliminated),
-        and D's new target becomes C, who used to be B's target. The chain never breaks, until
+        In this case, B is out of the game (and gets an email saying they’ve been eliminated),
+        and D’s new target becomes C, who used to be B’s target. The chain never breaks, until
         only two people are left at the end of the game.
       </p>
 
@@ -80,25 +80,25 @@ export default function Home() {
       </div>
 
       <p style={{ fontSize: 16, lineHeight: 1.5, marginBottom: 20 }}>
-        The last two remaining players become each other's target, and the game continues until
+        The last two remaining players become each other’s target, and the game continues until
         one of them wins. Whoever eliminates their opponent first wins.
       </p>
 
       <p style={{ fontSize: 16, lineHeight: 1.5, marginBottom: 20 }}>
         <b><span style={{ color: "#3F4739" , fontSize: 25}}>Why Lades?</span> </b>
         <br />
-        Our method of "assassinating" — i.e. how we eliminate our targets — will be to "lades"
+        Our method of “assassinating” — i.e. how we eliminate our targets — will be to “lades”
         them (a Turkish tradition where you try to catch someone off guard into taking something
-        from your hand without thinking, or vice versa). I'm still surprised at how widely known
-        lades is among everyone in Turkey; I've never in my life met anyone in Turkey who doesn't
-        know what lades is. It's a genuinely cultural thing, and as far as I've researched, it
-        doesn't exist in any other country — I think there might be something similar in northern
+        from your hand without thinking, or vice versa). I’m still surprised at how widely known
+        lades is among everyone in Turkey; I’ve never in my life met anyone in Turkey who doesn’t
+        know what lades is. It’s a genuinely cultural thing, and as far as I’ve researched, it
+        doesn’t exist in any other country — I think there might be something similar in northern
         Iran.
         <br />
         Another reason I think lades is a great elimination method is that it stretches out the
         timing of the interaction and makes it funnier. Some lades methods that come to mind:
-        things like "can you hold my coffee for a second?" or "hey, can you take a photo of me
-        over there?"... but I'm sure you'll come up with much more creative methods.
+        things like “can you hold my coffee for a second?” or “hey, can you take a photo of me
+        over there?”... but I’m sure you’ll come up with much more creative methods.
       </p>
 
 
@@ -120,7 +120,7 @@ export default function Home() {
         But what if someone clicks the link to eliminate you by mistake (or in bad faith) without
         actually ladesing you? A confirmation system was put in place for this. When A clicks the
         link to eliminate B, an email will be sent to B. The email will have two options:
-        &quot;Yes, I was really eliminated&quot; or &quot;This was a mistake, I wasn't really
+        &quot;Yes, I was really eliminated&quot; or &quot;This was a mistake, I wasn’t really
         eliminated.&quot; If neither link is clicked within 10 minutes, it will automatically be
         counted as eliminated.
       </p>
@@ -128,11 +128,11 @@ export default function Home() {
       <p style={{ fontSize: 16, lineHeight: 1.5, marginBottom: 20 }}>
         <b><span style={{ color: "#3F4739" , fontSize: 25}}>Tips & Tricks</span> </b>
         <br/> 
-        1) While playing, you'll always know who your target is, but you won't know who's
+        1) While playing, you’ll always know who your target is, but you won’t know who’s
         targeting you! So keep in mind that anyone could be after you, trying to lades you :)
         <br/>
-        2) That means if you try to lades someone and fail, they'll now realize you're trying to
-        lades them, and it'll be a lot harder from then on!
+        2) That means if you try to lades someone and fail, they’ll now realize you’re trying to
+        lades them, and it’ll be a lot harder from then on!
         3) A reminder of one of the most important rules of lades: if someone hands you something
         to take, you can say
         <strong/> &quot;aklımda&quot; (&quot;I remember&quot;) <strong/> before taking it into your
